@@ -22,7 +22,6 @@ public class Client {
 
     public void createBuffered() throws IOException {
         final BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         while (true) {
             String input = bf.readLine();
             sendMsg(input);
