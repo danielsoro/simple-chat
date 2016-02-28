@@ -1,4 +1,4 @@
-import java.awt.*;
+import javax.swing.text.JTextComponent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,7 +19,7 @@ public class Client {
         createBuffered();
     }
 
-    public Client(String host, int port, TextComponent target) throws IOException {
+    public Client(String host, int port, JTextComponent target) throws IOException {
         this.socket = new Socket(host, port);
         this.executorService.execute(new ClientX11Msg(socket, target));
         this.out = new PrintWriter(socket.getOutputStream(), true);
