@@ -1,32 +1,22 @@
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Server {
+    private static final Executor executorService = Executors.newCachedThreadPool();
+    private static final HashSet<PrintWriter> writers = new HashSet<>();
+
     public static void main(String[] args) {
-
-        String msgEntrada = "";
-        String msgSaida = "";
-
-        try(ServerSocket serverSocket = new ServerSocket(12345);
-            Socket socket = serverSocket.accept();) {
-
-            DataInputStream din = new DataInputStream(socket.getInputStream());
-            DataOutputStream dout = new DataOutputStream(socket.getOutputStream());
-
-            BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-            while (!msgEntrada.equalsIgnoreCase("exit")) {
-                msgEntrada = din.readUTF();
-                System.out.println(msgEntrada);
-                msgSaida = bf.readLine();
-                dout.writeUTF(msgSaida);
-                dout.flush();
+        System.out.println("The chat is running.");
+        try (ServerSocket serverSocket = new ServerSocket(8080)) {
+            while (true) {
+                RequestHandler request = new RequestHandler(serverSocket.accept(), writers, UUID.randomUUID().toString());
+                executorService.execute(request);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
