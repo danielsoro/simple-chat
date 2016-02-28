@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,13 +12,17 @@ public class Client {
     private final Socket socket;
     private final PrintWriter out;
 
-    public Client(String host, int port, boolean console) throws IOException {
+    public Client(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
-        this.executorService.execute(new ClientMsg(socket));
+        this.executorService.execute(new ClientConsoleMsg(socket));
         this.out = new PrintWriter(socket.getOutputStream(), true);
-        if (console) {
-            createBuffered();
-        }
+        createBuffered();
+    }
+
+    public Client(String host, int port, TextComponent target) throws IOException {
+        this.socket = new Socket(host, port);
+        this.executorService.execute(new ClientX11Msg(socket, target));
+        this.out = new PrintWriter(socket.getOutputStream(), true);
     }
 
     public void createBuffered() throws IOException {
@@ -34,7 +39,7 @@ public class Client {
 
     public static void main(String[] args) {
         try {
-            new Client("localhost", 8080, true);
+            new Client("localhost", 8080);
         } catch (IOException e) {
             System.out.println("Erro when trying connect: " + e.getMessage());
         }
