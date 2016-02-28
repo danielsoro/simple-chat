@@ -7,11 +7,16 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class Client {
-    private static final Executor executorService = Executors.newCachedThreadPool();
+    private final Executor executorService = Executors.newCachedThreadPool();
 
     public static void main(String[] args) {
-        try (Socket socket = new Socket("127.0.0.1", 8080)) {
+        new Client().createClient("localhost", 8080);
+    }
+
+    public void createClient(String hots, int port) {
+        try (Socket socket = new Socket(hots, port)) {
             executorService.execute(new ClientMsg(socket));
+
             final BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
             final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             while (true) {

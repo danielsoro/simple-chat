@@ -7,12 +7,16 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class Server {
-    private static final Executor executorService = Executors.newCachedThreadPool();
-    private static final HashSet<PrintWriter> writers = new HashSet<>();
+    private final Executor executorService = Executors.newCachedThreadPool();
+    private final HashSet<PrintWriter> writers = new HashSet<>();
 
     public static void main(String[] args) {
+        new Server().createServer(8080);
+    }
+
+    public void createServer(int port) {
         System.out.println("The chat is running.");
-        try (ServerSocket serverSocket = new ServerSocket(8080)) {
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
                 RequestHandler request = new RequestHandler(serverSocket.accept(), writers, UUID.randomUUID().toString());
                 executorService.execute(request);
