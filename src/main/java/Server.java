@@ -18,7 +18,7 @@ public class Server {
         System.out.println("The chat is running.");
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             while (true) {
-                RequestHandler request = new RequestHandler(serverSocket.accept(), writers, UUID.randomUUID().toString());
+                Handler request = new Handler(serverSocket.accept(), writers, UUID.randomUUID().toString());
                 executorService.execute(request);
             }
         } catch (IOException e) {

@@ -5,13 +5,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashSet;
 
-public class RequestHandler implements Runnable {
+public class Handler implements Runnable {
     private final String name;
     private final Socket socket;
     private final HashSet<PrintWriter> writers;
 
 
-    public RequestHandler(Socket accept, HashSet<PrintWriter> serverWrites, String name) {
+    public Handler(Socket accept, HashSet<PrintWriter> serverWrites, String name) {
         this.socket = accept;
         this.writers = serverWrites;
         this.name = name;
@@ -22,7 +22,6 @@ public class RequestHandler implements Runnable {
         try {
             final BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            System.out.println("Joined: " + name);
             writers.add(out);
 
             while (true) {
